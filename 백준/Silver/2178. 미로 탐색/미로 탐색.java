@@ -35,6 +35,7 @@ public class Main {
 				map[ny][nx] = map[cy][cx] + 1;
 				q.add(new int[] {ny, nx});
 				
+				if(ny==N-1 && nx == M-1) return;
 			
 			}
 		}
