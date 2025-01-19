@@ -6,7 +6,7 @@ public class Main {
 	static int C;
 	static char[] data;
 	static char[] order;
-	static String check = "aeiou";
+	static Set<Character> check = new HashSet<>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
 	static StringBuilder sb = new StringBuilder();
 	
 	public static void main(String[] args) throws IOException {
@@ -17,14 +17,7 @@ public class Main {
 
 	static void select(int start, int index) {
 		if(index == L) {
-			int cnt = 0;
-			for(int i=0; i<L; i++) {
-				if(check.contains(String.valueOf(order[i]))){
-					cnt++;
-				}
-			}
-			
-			if(1 <= cnt && (L-cnt) >= 2) {
+			if(isPass(order)) {
 				for(int i=0; i<L; i++) {
 					sb.append(order[i]);
 				}
@@ -37,6 +30,16 @@ public class Main {
 			order[index] = data[i];
 			select(i+1, index+1);
 		}
+	}
+	
+	static boolean isPass(char[] arr) {
+		int cnt = 0;
+		for(int i=0; i<L; i++) {
+			if(check.contains(order[i])){
+				cnt++;
+			}
+		}
+		return 1 <= cnt && (L-cnt) >= 2;
 	}
 	
 	static void input() throws IOException {
