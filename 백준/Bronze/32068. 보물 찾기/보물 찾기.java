@@ -9,6 +9,7 @@ public class Main {
 	static int S;
 	static StringTokenizer st;
 	static int stage;
+	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		
@@ -25,21 +26,12 @@ public class Main {
 		
 	}
 	static void solve() {
-		stage=2;
-
-		int now = S;
-		while(true) {
-			if(stage%2 == 0) {
-				now += stage-1;
-			} else {
-				now -= stage-1;
-			}
-			
-			if(now == L || now == R) {
-				return ;
-			}
-			stage++;
+		if(R-S <= S-L) {
+			stage = 2*(R-S);
+		} else {
+			stage = 2*(S-L)+1;
 		}
+		
 	}
 	
 	static void input() throws IOException {
