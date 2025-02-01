@@ -1,38 +1,31 @@
-import java.util.*;
 import java.io.*;
 
 public class Main {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static String input;
+	static int stick;
 	static int answer;
 	
 	public static void main(String[] args) throws IOException {
 		input = br.readLine();
 		
-		Stack<Character> stack = new Stack<>();
-		
-		int i=0;
-		while(i<input.length()-1) {
+		for(int i=0; i<input.length()-1; i++) {
 			char now = input.charAt(i);
 			char next = input.charAt(i+1);
 			
-			if(now == '(' && next == ')') {
-				answer += stack.size(); 
-				i += 2;
-				continue;
+			if(now == '(') {
+				if(next == ')') {
+					answer += stick; 
+					i++;
+					continue;
+				}
+				stick++;
+				answer++;
 			}
-			
-			if(now == ')') {
-				stack.pop();
-				i++;
-				continue;
+			else {
+				stick--;
 			}
-			
-			stack.add(now);
-			answer++;
-			i++;
 		}
-		
 		System.out.println(answer);
 	}
 }
