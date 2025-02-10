@@ -2,8 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -29,7 +28,10 @@ public class Main {
 	}
 
 	static void bfs() {
-		Queue<int[]> q = new LinkedList<>();
+		PriorityQueue<int[]> q = new PriorityQueue<>((o1, o2)-> {
+			return o1[2] - o2[2];
+		});
+		
 		int startY = 0;
 		int startX = 0;
 		int cost = map[startY][startX];
@@ -55,6 +57,8 @@ public class Main {
 				if(costMap[ny][nx] <= ncost) continue;
 				
 				costMap[ny][nx] = ncost;
+				
+				if(ny == N-1 && nx == N-1) return ;
 				q.offer(new int[] {ny, nx, ncost});
 			}
 		}
