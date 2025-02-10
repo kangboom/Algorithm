@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -11,7 +10,7 @@ public class Main {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static StringTokenizer st;
 	static int N;
-	static Map<Character, Node> graph;
+	static int[][] graph;
 	static StringBuilder sb;
 
 	
@@ -20,48 +19,50 @@ public class Main {
 		input();
 		
 		sb = new StringBuilder();
-		preorder('A');
+		preorder(0);
 		
 		sb.append('\n');
-		inorder('A');
+		inorder(0);
 		
 		sb.append('\n');
-		postorder('A');
+		postorder(0);
 		
 		System.out.println(sb);
 	}
 	
-	static void preorder(char node) {
-		if(node == '.') return ;
+	static void preorder(int node) {
+		if(node == '.'-'A') return ;
 		
-		sb.append(node);
-		preorder(graph.get(node).left);
-		preorder(graph.get(node).right);
+		sb.append((char)(node+'A'));
+		preorder(graph[node][0]);
+		preorder(graph[node][1]);
 	}
 	
-	static void inorder(char node) {
-		if(node == '.') return ;
+	static void inorder(int node) {
+		if(node == '.'-'A') return ;
 		
-		inorder(graph.get(node).left);
-		sb.append(node);
-		inorder(graph.get(node).right);
+		inorder(graph[node][0]);
+		sb.append((char)(node+'A'));
+		inorder(graph[node][1]);
 	}
 	
-	static void postorder(char node) {
-		if(node == '.') return ;
+	static void postorder(int node) {
+		if(node == '.'-'A') return ;
 		
-		postorder(graph.get(node).left);
-		postorder(graph.get(node).right);
-		sb.append(node);
+		postorder(graph[node][0]);
+		postorder(graph[node][1]);
+		sb.append((char)(node+'A'));
 	}
 	
 	static void input() throws IOException {
 		N = Integer.parseInt(br.readLine());
-		graph = new HashMap<>();
+		graph = new int[N][2];
 		
 		for(int i=0; i<N ;i++) {
 			st = new StringTokenizer(br.readLine());
-			graph.put(st.nextToken().charAt(0), new Node(st.nextToken().charAt(0), st.nextToken().charAt(0)));
+			int node = st.nextToken().charAt(0)-'A';
+			graph[node][0] = st.nextToken().charAt(0)-'A';
+			graph[node][1] = st.nextToken().charAt(0)-'A';
 		}
 	}
 }
