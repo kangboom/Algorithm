@@ -48,15 +48,19 @@ public class Main {
 			int cv = cur[0];
 			int distance = cur[1];
 			
+			if(cv == target) {
+				return dist[cv];
+			}
+
 			if(dist[cv] < distance) continue;
-			
+						
 			for(int i=0; i<graph[cv].size(); i++) {
 				int nv = graph[cv].get(i)[0];
 				int cost = graph[cv].get(i)[1];
 				
 				if(dist[nv] > distance + cost) {
 					dist[nv] = distance + cost;
-					
+				
 					pq.offer(new int[] {nv, dist[nv]});
 				}
 			}
