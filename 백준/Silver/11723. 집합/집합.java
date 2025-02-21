@@ -18,35 +18,36 @@ public class Main {
 			String oper = st.nextToken();
 			
 			byte num = 0;
-			if(!(oper.equals("all") || oper.equals("empty"))) {
-				num = (byte)Integer.parseInt(st.nextToken());
-			}
-			
-			switch(oper) {
-			case "add":
-				set = set | 1<<num;
+			switch(oper.charAt(0)) {
+			case 'a':
+				if(oper.charAt(1) == 'd') {
+					num = (byte)Integer.parseInt(st.nextToken());
+					set = set | 1<<num;
+				} else {
+					set = (int) (Math.pow(2, 21)) - 1;
+				}
 				break;
-			case "check":
+			case 'c':
+				num = (byte)Integer.parseInt(st.nextToken());
 				if((set & 1<<num) != 0) {
 					sb.append(1 + "\n");
 				} else {
 					sb.append(0 + "\n");
 				}
 				break;
-			case "remove":
+			case 'r':
+				num = (byte)Integer.parseInt(st.nextToken());
 				set = set & ~(set & 1<<num);
 				break;
-			case "toggle":
+			case 't':
+				num = (byte)Integer.parseInt(st.nextToken());
 				if((set & 1<<num) != 0) {
 					set = set & ~(set & 1<<num);
 				} else {
 					set = set | 1<<num;
 				}
 				break;
-			case "all":
-				set = (int) (Math.pow(2, 21)) - 1;
-				break;
-			case "empty":
+			case 'e':
 				set = 0;
 				break;
 			}
