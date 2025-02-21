@@ -13,7 +13,7 @@ public class Main {
 	static StringTokenizer st;
 	static int N;
 	static int E;
-	static List<int[]>[] graph;
+	static List<Edge>[] graph;
 	static int node1;
 	static int node2;
 	static final int INF = 200000000;
@@ -36,32 +36,27 @@ public class Main {
 		int[] dist = new int[N+1];
 		Arrays.fill(dist, INF);
 		
-		PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> {
-			return o1[1] - o2[1];
-		});
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
 		
-		pq.offer(new int[] {start, 0});
+		pq.offer(new Edge(start, 0));
 		dist[start] = 0;
 		
 		while(!pq.isEmpty()) {
-			int[] cur = pq.poll();
-			int cv = cur[0];
-			int distance = cur[1];
+			Edge now = pq.poll();
 			
-			if(cv == target) {
-				return dist[cv];
+			if(now.v == target) {
+				return dist[now.v];
 			}
 
-			if(dist[cv] < distance) continue;
+			if(dist[now.v] < now.cost) continue;
 						
-			for(int i=0; i<graph[cv].size(); i++) {
-				int nv = graph[cv].get(i)[0];
-				int cost = graph[cv].get(i)[1];
+			for(int i=0; i<graph[now.v].size(); i++) {
+				Edge next = graph[now.v].get(i);
 				
-				if(dist[nv] > distance + cost) {
-					dist[nv] = distance + cost;
+				if(dist[next.v] > now.cost + next.cost) {
+					dist[next.v] = now.cost + next.cost;
 				
-					pq.offer(new int[] {nv, dist[nv]});
+					pq.offer(new Edge(next.v, dist[next.v]));
 				}
 			}
 		}
@@ -84,12 +79,27 @@ public class Main {
 			int b = Integer.parseInt(st.nextToken());
 			int c = Integer.parseInt(st.nextToken());
 			
-			graph[a].add(new int[] {b, c});
-			graph[b].add(new int[] {a, c});
+			graph[a].add(new Edge(b, c));
+			graph[b].add(new Edge(a, c));
 		}
 		
 		st = new StringTokenizer(br.readLine());
 		node1 = Integer.parseInt(st.nextToken());
 		node2 = Integer.parseInt(st.nextToken());
+	}
+}
+
+class Edge implements Comparable<Edge>{
+	int v;
+	int cost;
+	
+	Edge(int v, int cost) {
+		this.v = v;
+		this.cost = cost;
+	}
+	
+	@Override
+	public int compareTo(Edge o) {
+		return Integer.compare(this.cost, o.cost);
 	}
 }
