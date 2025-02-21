@@ -7,6 +7,23 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
+/***
+ * 
+ *	다익스트라 응용 문제이다.
+ *	두 개의 노드를 필수 적으로 거쳐가야되므로
+ *  (1) 1 -> node1 -> node2 -> N 인 경우와 (2) 1 -> node2 -> node1 -> N
+ *  두 가지 경우 중 최솟 값을 찾아주면 된다.
+ *  
+ *  거리 배열을 초기화 할 때는 INF 값을 2억으로 정해주었다.
+ *  사실 INF 값은 dist 배열에 들어갈 수 있는 값이 799 * 1000이므로 INF 값은 800 * 1000이 될 수 있지만, 
+ *  경로가 불가능한지 확인 할 때 3지점을 더해서 INF과 비교하므로 800 * 1000 * 3만 넘으면 된다.
+ *  
+ *  처음에 로직 흐름이 헷갈려서 다익스트라 알고리즘에서 dist배열을 갱신할 때
+ *  next 노드가 target이면 바로 return하게 해줬는데
+ *  dist를 갱신할 때가 아니라 q에서 나올 때 확인해줘야된다. 
+ *  (먼저 갱신된게 최솟값이라는 건 보장 못함, 하지만 먼저 나오는 건 우선순위 큐에 의해 보장) 
+ *  
+ */
 public class Main {
 	
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,6 +51,7 @@ public class Main {
 	
 	static int dijkstra(int start, int target) {
 		int[] dist = new int[N+1];
+		boolean[] visited = new boolean[N+1];
 		Arrays.fill(dist, INF);
 		
 		PriorityQueue<Edge> pq = new PriorityQueue<>();
@@ -48,7 +66,8 @@ public class Main {
 				return dist[now.v];
 			}
 
-			if(dist[now.v] < now.cost) continue;
+			if(visited[now.v]) continue;
+			visited[now.v] = true;
 						
 			for(int i=0; i<graph[now.v].size(); i++) {
 				Edge next = graph[now.v].get(i);
