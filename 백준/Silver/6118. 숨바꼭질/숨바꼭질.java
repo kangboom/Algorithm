@@ -16,11 +16,14 @@ public class Main {
 	static int answerCnt;
 	static int N;
 	static int M;
+	static final int INF = 20000;
 
 	public static void main(String[] args) throws IOException {
 		input();
 		bfs();
-		System.out.println(answerNum + " " + max + " " + answerCnt);
+		StringBuilder sb = new StringBuilder();
+		sb.append(answerNum).append(" ").append(max).append(" ").append(answerCnt);
+		System.out.println(sb);
 	}
 	
 	static void bfs() {
@@ -52,6 +55,7 @@ public class Main {
 		}
 		
 	}
+
 
 	static void input() throws IOException {
 		st = new StringTokenizer(br.readLine());
