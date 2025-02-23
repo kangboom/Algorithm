@@ -1,8 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
@@ -16,7 +16,6 @@ public class Main {
 	static int answerCnt;
 	static int N;
 	static int M;
-	static final int INF = 20000;
 
 	public static void main(String[] args) throws IOException {
 		input();
@@ -28,29 +27,26 @@ public class Main {
 	
 	static void bfs() {
 		boolean[] visited = new boolean[N+1];
-		Queue<Node> q = new LinkedList<>();
-		q.offer(new Node(1, 0));
+		Queue<int[]> q = new ArrayDeque<>();
+		q.offer(new int[] {1, 0});
 		visited[1] = true;
 		
 		while(!q.isEmpty()) {
-			Node now = q.poll();
+			int[] now = q.poll();
 			
-			if(max < now.dist) {
-				max = now.dist;
-				answerNum = now.v;
+			if(max < now[1]) {
+				max = now[1];
+				answerNum = now[0];
 				answerCnt =1;
-			} else if(max == now.dist) {
-				answerNum = Math.min(answerNum, now.v);
+			} else if(max == now[1]) {
+				answerNum = Math.min(answerNum, now[0]);
 				++answerCnt;
 			}
 			
-			for(int i=0; i<graph[now.v].size(); i++) {
-				int next = graph[now.v].get(i);
-				
+			for(int next : graph[now[0]]) {
 				if(visited[next]) continue;
-				
 				visited[next] = true;
-				q.offer(new Node(next, now.dist+1));
+				q.offer(new int[] {next, now[1]+1});
 			}
 		}
 		
@@ -74,15 +70,5 @@ public class Main {
 			graph[a].add(b);
 			graph[b].add(a);
 		}
-	}
-}
-
-class Node {
-	int v;
-	int dist;
-	
-	Node(int v, int dist) {
-		this.v = v;
-		this.dist = dist;
 	}
 }
