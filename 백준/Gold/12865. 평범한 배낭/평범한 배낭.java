@@ -22,7 +22,7 @@ public class Main {
 	static void solve() {
 		for(int i=1; i<=N; i++) {
 			for(int w=1; w<=K; w++) {
-				dp[i][w] = Math.max(dp[i][w], Math.max(dp[i-1][w], dp[i][w-1]));
+				dp[i][w] = dp[i-1][w];
 				if(w-things[i][0] >=0) {
 					dp[i][w] = Math.max(dp[i][w], dp[i-1][w-things[i][0]] + things[i][1]);
 				}
@@ -42,10 +42,6 @@ public class Main {
 			things[i][0] = Integer.parseInt(st.nextToken());
 			things[i][1] = Integer.parseInt(st.nextToken());
 		}
-		Arrays.sort(things, (o1, o2) -> {
-			return o1[0] - o2[0];
-		});
-		
 	}
 
 }
