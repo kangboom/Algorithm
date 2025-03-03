@@ -4,59 +4,38 @@ import java.io.InputStreamReader;
 
 public class Main {
 	static int N;
-	static boolean[][] visited;
+	static boolean[] col;
+	static boolean[] slash;
+	static boolean[] bslash;
 	static int answer;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
+		col = new boolean[N+1];
+		slash = new boolean[2*N+1];
+		bslash = new boolean[2*N];
 		
-		visited = new boolean[N][N];
-		for(int i=0; i<N; i++) {
-			visited[0][i] = true;
-			solve(1);
-			visited[0][i] = false;
-		}
+		solve(1);
 		System.out.println(answer);
 	}
 	
-	static void solve(int depth) {
-		if(depth == N) {
+	static void solve(int r) {
+		if(r == N+1) {
 			++answer;
 			return ;
 		}
 		
-		for(int i=0; i<N; i++) {
-			if(!isPossilbe(depth, i)) continue;
+		for(int c=1; c<=N; c++) {
+			if(isImpossilbe(r, c)) continue;
 			
-			visited[depth][i] = true;
-			solve(depth+1);
-			visited[depth][i] = false;
+			col[c] = slash[r+c] = bslash[(r-c)+N] = true;
+			solve(r+1);
+			col[c] = slash[r+c] = bslash[(r-c)+N] = false;
 		}
 	}
 	
-	static boolean isPossilbe(int y, int x) {
-		
-		// 행 탐색
-		int i = y-1;
-		while(i>=0) {
-			if(visited[i--][x]) return false;
-		}
-
-		// 왼쪽 대각선
-		i = y-1;
-		int l = x-1;
-		while(i>=0 && l>=0) {
-			if(visited[i--][l--]) return false;
-		}
-		
-		// 오른쪽 대각선
-		i = y-1;
-		int r = x+1;
-		while(i>=0 && r<=N-1) {
-			if(visited[i--][r++]) return false;
-		}
-		
-		return true;
+	static boolean isImpossilbe(int r, int c) {
+		return col[c] || slash[r+c] || bslash[(r-c)+N]; 
 	}
 
 }
