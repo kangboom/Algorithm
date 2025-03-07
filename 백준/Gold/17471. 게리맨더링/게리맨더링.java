@@ -14,16 +14,16 @@ public class Main {
 	static boolean[] select;
 	static boolean[] visited;
 	static int[] population;
-	static List<Integer>[] graph;
+	static Link[] graph;
 	static int answer;
 	
 	public static void main(String[] args) throws IOException {
 		input();
 		for(int i=1; i<=N/2; i++) {
 			Arrays.fill(select,  false);
-			Arrays.fill(visited, false);
 			comb(1, 1, i);
 		}
+		
 		if(answer == Integer.MAX_VALUE) {
 			System.out.println(-1);
 			return ;
@@ -34,8 +34,8 @@ public class Main {
 	static void dfs(int start, boolean group) { // 탐색
 		visited[start] = true;
 		
-		for(int i=0; i<graph[start].size(); i++) {
-			int next = graph[start].get(i);
+		for(Link tmp = graph[start]; tmp != null; tmp = tmp.next) {
+			int next = tmp.to;
 			
 			if(select[next] != group) continue;
 			if(visited[next]) continue;
@@ -56,7 +56,6 @@ public class Main {
 						sum2 += population[i];
 					}
 				}
-				
 				answer = Math.min(answer, Math.abs(sum1-sum2));
 			};
 			return ;
@@ -72,41 +71,29 @@ public class Main {
 	
 	static boolean isConnected() {
 		int some=0;
-		int someCnt = 0;
 		int other=0;
-		int otherCnt = 0;
+		
 		for(int i=1; i<=N; i++) {
 			if(select[i]) {
 				some = i;
-				someCnt++;
-			} else {
-				other = i;
-				otherCnt++;
-			}
+			} 
 		}
+		
+		for(int i=1; i<=N; i++) {
+			if(!select[i]) {
+				other = i;
+			} 
+		}
+		
 		Arrays.fill(visited, false);
 		dfs(some, true);
-
-		int tmp = 0;
-		for(int i=1; i<=N; i++) {
-			if(visited[i]) {
-				tmp++;
-			}
-		}
-		if(someCnt!=tmp) return false;
-		
-		Arrays.fill(visited, false);
 		dfs(other, false);
 		
-		tmp = 0;
 		for(int i=1; i<=N; i++) {
-			if(visited[i]) {
-				tmp++;
+			if(!visited[i]) {
+				return false;
 			}
 		}
-		
-		if(otherCnt != tmp) return false;
-		
 		return true;
 
 	}
@@ -123,16 +110,25 @@ public class Main {
 			population[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		graph = new ArrayList[N+1];
+		graph = new Link[N+1];
 		for(int i=1; i<=N; i++) {
 			st = new StringTokenizer(br.readLine());
 			int cnt = Integer.parseInt(st.nextToken());
-			graph[i] = new ArrayList<>();
 			for(int j=0; j<cnt; j++) {
-				graph[i].add(Integer.parseInt(st.nextToken()));
+				graph[i] = new Link(Integer.parseInt(st.nextToken()), graph[i]);
 			}
 		}
 		
 		answer = Integer.MAX_VALUE;
+	}
+}
+
+class Link {
+	int to;
+	Link next;
+	
+	Link(int to, Link next){
+		this.to = to;
+		this.next = next;
 	}
 }
