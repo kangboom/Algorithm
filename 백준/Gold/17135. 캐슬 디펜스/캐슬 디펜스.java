@@ -37,14 +37,13 @@ public class Main {
 		}
 
 		int removeCnt = 0; // 제거한 적의 개수
-		boolean isContinue = true; // 게임 계속 진행할지 여부
-		boolean isFirst = true; 
-		while (isContinue) {
+		int t = 0;
+		while (t<N) {
 
 			removeList.clear();
 			for (int i = 0; i < 3; i++) {
 				boolean[][] visited = new boolean[N][M];
-				bfs(N - 1, order[i], 1, copyMap, visited);
+				bfs(N - 1-t, order[i], 1, copyMap, visited);
 			}
 
 			for (int[] loc : removeList) {
@@ -53,21 +52,7 @@ public class Main {
 				++removeCnt;
 			}
 			
-			// 적 전진
-			isContinue = false;
-			for(int i=N-2; i>=0; i--) {
-				for(int j=0; j<M; j++) {
-					copyMap[i+1][j] = copyMap[i][j];
-					if(copyMap[i][j] == 1) {
-						isContinue = true;
-					}
-				}
-			}
-			
-			if(isFirst) {
-				Arrays.fill(copyMap[0], 0);
-				isFirst = false;
-			}
+			++t;
 		}
 		ans = Math.max(ans, removeCnt);
 	}
