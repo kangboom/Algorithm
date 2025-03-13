@@ -6,18 +6,13 @@ public class Main {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static TrieNode root;
 	static StringBuilder sb = new StringBuilder();
-	static String[] numbers;
-	static int N;
-	static boolean isPossible;
+	static boolean isPossilbe;
+
 	public static void main(String[] args) throws Exception {
 		int T = Integer.parseInt(br.readLine());
 		for (int t = 1; t <= T; t++) {
 			input();
-			for(int i=0; i<N; i++) {
-				insert(numbers[i]);
-			}
-			check(root);
-			if (isPossible) {
+			if (isPossilbe) {
 				sb.append("YES").append('\n');
 			} else {
 				sb.append("NO").append('\n');
@@ -26,35 +21,29 @@ public class Main {
 		System.out.println(sb);
 	}
 
-	static void check(TrieNode t) {
-		if(t.isEnd) {
-			if(t.cnt >= 2) {
-				isPossible = false;
-				return ;
-			}
-		}
-		
-		for(int i=0; i<10; i++) {
-			if(t.children[i] == null) continue;
-			check(t.children[i]);
-		}
-	}
-	
 	static void input() throws Exception {
 		root = new TrieNode();
+		isPossilbe = true;
 
-		N = Integer.parseInt(br.readLine());
-		numbers = new String[N];
-		for (int i = 0; i < N; i++) {
-			numbers[i] = br.readLine();
+		int n = Integer.parseInt(br.readLine());
+		for (int i = 0; i < n; i++) {
+			insert(br.readLine());
 		}
-		
-		isPossible = true;
 	}
 
 	static void insert(String s) {
+		if (!isPossilbe)
+			return;
+
 		TrieNode t = root;
 		for (int i = 0; i < s.length(); i++) {
+			
+			// 중간에 끝점을 민나면 false
+			if (t.isEnd) {
+				isPossilbe = false;
+				return;
+			}
+
 			int idx = s.charAt(i) - '0'; // 인덱스는 문자를 표현, 문자 '0'은 배열 0번에 들어가고 '1'은 배열 1번에 들어간다.
 
 			if (t.children[idx] == null) {
@@ -63,8 +52,12 @@ public class Main {
 
 			t = t.children[idx];
 			++t.cnt;
+
 		}
 		t.isEnd = true;
+		if (t.cnt > 1) {
+			isPossilbe = false;
+		}
 	}
 
 	static class TrieNode {
