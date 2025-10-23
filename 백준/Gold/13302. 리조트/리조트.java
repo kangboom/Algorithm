@@ -7,46 +7,56 @@ public class Main {
     static int N;
     static int M;
     static boolean[] visited;
-    static int ans;
+    static int[][] dp;
+    static int INF = Integer.MAX_VALUE;
+    
     public static void main(String[] args) throws  Exception {
         input();
         solve(0, 0, 0);
+        
+        int ans = INF;
+        for(int i=0; i<=40; i++) {
+        	ans = Math.min(ans, dp[N][i]);
+        }
         System.out.println(ans);
     }
 
     static void solve(int depth, int total, int coupon){
-        if(depth >= N){
 
-            if(ans > total){
-                ans = total;
-            }
-            return ;
-        }
-        // 현재 최소값보다 같거나 크면 종료
-        if(total >= ans){
-            return ;
-        }
-
-        // 리조트를 안가는 날이면 바로 다음날로 이동
-        if(visited[depth+1]) {
-            solve(depth + 1, total, coupon);
-            return ;
-        }
-
-        if(coupon >= 3){
-            // 쿠폰 사용 O
-            solve(depth + 1, total, coupon-3);
-            // 쿠폰 사용 X
-            // 1일
-            solve(depth+1, total + 10000, coupon);
-            solve(depth+3, total + 25000, coupon + 1);
-            solve(depth+5, total + 37000, coupon + 2);
-        } else {
-            solve(depth+1, total + 10000, coupon);
-            solve(depth+3, total + 25000, coupon + 1);
-            solve(depth+5, total + 37000, coupon + 2);
-        }
+    	dp[0][0] = 0;
+    	for(int i=0; i<N; i++) {
+    		for(int j=0; j<40; j++) {
+  
+    			int tmp = dp[i][j];
+    			
+    			if(tmp == INF) {
+    				continue;
+    			}
+    			
+    			if(visited[i+1]) {
+    				dp[i+1][j] = Math.min(dp[i+1][j], tmp);
+    			}
+    			
+    			if(j>=3) {
+    				dp[i+1][j-3] = Math.min(dp[i+1][j-3], tmp);
+    			}
+    			
+    			// 1일권
+    			dp[i+1][j] = Math.min(dp[i+1][j], tmp + 10000);
+    			
+    			// 3일권
+    			for(int k=1; k<=3; k++) {
+    				dp[i+k][j+1] = Math.min(dp[i+k][j+1], tmp + 25000);
+    			}
+    			
+    			// 5일권
+    			for(int k=1; k<=5; k++) {
+    				dp[i+k][j+2] = Math.min(dp[i+k][j+2], tmp + 37000);
+    			}
+    		}
+    	}
     }
+    
     static void input() throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -54,8 +64,12 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         visited = new boolean[N+1];
-
-        ans = Integer.MAX_VALUE;
+        dp = new int[N+5][42]; // 쿠폰 최대 40장
+        for(int i=0; i<=N; i++) {
+        	for(int j=0; j<=40; j++){
+        		dp[i][j] = INF;
+        	}
+        }
         if(M == 0) return ;
         st = new StringTokenizer(br.readLine());
         for(int i=0; i<M; i++){
