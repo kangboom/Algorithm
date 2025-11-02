@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -10,23 +9,24 @@ public class Main {
         int N = Integer.parseInt(br.readLine());
         int[] arr = new int[N+1];
         int[] ans = new int[N+1];
+        int[] stack = new int[N+1];
+        int size = 0;
         
         StringTokenizer st = new StringTokenizer(br.readLine());
         for(int i=1; i<=N; i++){
             arr[i] = Integer.parseInt(st.nextToken());
         }
         
-        Stack<Integer> stack = new Stack<>();
         for(int i=N; i>0; i--){
-            while(!stack.isEmpty() && arr[stack.peek()] <= arr[i]){
-                int index = stack.pop();
+            while(size != 0 && arr[stack[size]] <= arr[i]){
+                int index = stack[size--];
                 ans[index] = i;
             }
-            stack.add(i);
+            stack[++size] = i;
         }
         
-        while(!stack.isEmpty()){
-            int index = stack.pop();
+        while(size != 0){
+            int index = stack[size--];
             ans[index] = 0;
         }
         
