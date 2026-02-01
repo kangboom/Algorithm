@@ -2,77 +2,60 @@ import java.util.*;
 
 class Solution {
     public int[] solution(String[] genres, int[] plays) {
-        ArrayList<Integer> answer = new ArrayList<>();
-        int N = genres.length;
-        
-        Map<String, Genre> genreMap = new HashMap<>();
+        // 1. 장르별 총 재생 횟수 저장
+        Map<String, Integer> genrePlaySum = new HashMap<>();
+        // 2. 장르별 곡 리스트 저장
         Map<String, ArrayList<Song>> songListMap = new HashMap<>();
-        List<Genre> genreList = new ArrayList<>();
-        
-        for(int i=0; i<N; i++){
-            String str = genres[i];
-            int cnt = plays[i];
+
+        for (int i = 0; i < genres.length; i++) {
+            String genre = genres[i];
+            int play = plays[i];
+
+            // Map API 활용하여 간결하게 작성
+            genrePlaySum.put(genre, genrePlaySum.getOrDefault(genre, 0) + play);
             
-            if(!genreMap.containsKey(str)){
-                Genre newGenre = new Genre(str, cnt);
-                genreMap.put(str, newGenre);
-                genreList.add(newGenre);
-            } else {
-                genreMap.get(str).sum += cnt;
-            }
-            
-            if(!songListMap.containsKey(str)){
-                ArrayList<Song> songList = new ArrayList<>();
-                songList.add(new Song(i, cnt));
-                songListMap.put(str, songList);
-            } else {
-                songListMap.get(str).add(new Song(i, cnt));
+            songListMap.computeIfAbsent(genre, k -> new ArrayList<>()).add(new Song(i, play));
+        }
+
+        // 3. 장르 선정 (총 재생 횟수 내림차순 정렬)
+        // Map의 KeySet(장르이름)을 리스트로 만들어 정렬
+        List<String> keySet = new ArrayList<>(genrePlaySum.keySet());
+        keySet.sort((o1, o2) -> genrePlaySum.get(o2) - genrePlaySum.get(o1));
+
+        List<Integer> answer = new ArrayList<>();
+
+        // 4. 장르별 1, 2등 곡 선정
+        for (String genre : keySet) {
+            ArrayList<Song> songs = songListMap.get(genre);
+            Collections.sort(songs); // Song 클래스의 compareTo 사용
+
+            int count = 0;
+            for (Song s : songs) {
+                if (count >= 2) break;
+                answer.add(s.num);
+                count++;
             }
         }
 
-        Collections.sort(genreList);
-        for(Genre genre : genreList){
-            String name = genre.name;
-            ArrayList<Song> songList = songListMap.get(name);
-            Collections.sort(songList);
-            
-            int max = 2;
-            for(Song song : songList){
-                if(max == 0) break;
-                answer.add(song.num);
-                max--;
-            }
-        }
+        // 5. 배열 변환
         return answer.stream().mapToInt(Integer::intValue).toArray();
     }
-    
-    static class Genre implements Comparable<Genre>{
-        String name;
-        int sum;
-        
-        public Genre(String name, int sum){
-            this.name = name;
-            this.sum = sum;
-        }
-        
-        @Override
-        public int compareTo(Genre o){
-            return o.sum - this.sum;
-        }
-    }
-    
+
     static class Song implements Comparable<Song> {
         int num;
         int cnt;
-        
-        public Song(int num, int cnt){
+
+        public Song(int num, int cnt) {
             this.num = num;
             this.cnt = cnt;
         }
-        
+
         @Override
-        public int compareTo(Song o){
-            return o.cnt - this.cnt;
+        public int compareTo(Song o) {
+            if (this.cnt == o.cnt) {
+                return this.num - o.num; // [중요] 재생 횟수 같으면 고유 번호 오름차순
+            }
+            return o.cnt - this.cnt; // 재생 횟수 내림차순
         }
     }
 }
