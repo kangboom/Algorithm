@@ -1,0 +1,7 @@
+-- 코드를 입력하세요
+SELECT CATEGORY, sum(sales) as TOTAL_SALES
+FROM BOOK JOIN BOOK_SALES ON BOOk.book_id = BOOK_SALES.book_id
+WHERE sales_date BETWEEN '2022-01-01' AND '2022-01-31'
+GROUP BY category
+ORDER BY CATEGORY
+
